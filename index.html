@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>La Stanza dei Giochi</title>
+    <style>
+        /* Sfondo blu scuro con pattern a puntini */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #172445; 
+            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 2px, transparent 2px);
+            background-size: 30px 30px;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Intestazione stile "Box Risposta" (Rosso scuro) */
+        header {
+            background: linear-gradient(to bottom, #8b0000, #4a0000);
+            border-bottom: 3px solid #000;
+            color: white;
+            width: 100%;
+            padding: 30px 0;
+            text-align: center;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.5);
+            margin-bottom: 50px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.8em;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        /* Griglia dei giochi */
+        .layout-griglia {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            width: 80%;
+            max-width: 1000px;
+            margin-bottom: 50px;
+        }
+
+        /* Schede dei giochi stile "Pulsanti Indizio" (Blu sfumato) */
+        .card-gioco {
+            background: linear-gradient(to bottom, #004b8d, #001a3b);
+            border: 2px solid #000;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.6);
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Effetto illuminazione oro al passaggio del mouse */
+        .card-gioco:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.8);
+            border-color: #d4a017; 
+        }
+
+        .card-titolo {
+            font-size: 1.8em;
+            color: white;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .card-descrizione {
+            font-size: 1.1em;
+            color: #d1e0e8;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        /* Pulsante "Gioca Ora" stile "Box Montepremi" (Oro) */
+        .btn-gioca {
+            display: inline-block;
+            padding: 15px 20px;
+            background: linear-gradient(to bottom, #d4a017, #8b6508);
+            border: 2px solid #000;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1.3em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            transition: filter 0.3s;
+        }
+
+        .btn-gioca:hover {
+            filter: brightness(1.2);
+        }
+
+        /* Stile per i giochi non ancora pronti */
+        .card-disabilitata {
+            background: linear-gradient(to bottom, #333, #111);
+        }
+
+        .btn-disabilitato {
+            background: #555;
+            color: #999;
+            cursor: not-allowed;
+            pointer-events: none;
+            border-color: #222;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>La Stanza dei Giochi</h1>
+    </header>
+
+    <div class="layout-griglia">
+        
+        <div class="card-gioco">
+            <div class="card-titolo">La Ghigliottina</div>
+            <div class="card-descrizione">Trova la parola misteriosa che collega i 5 indizi scegliendo le opzioni corrette senza azzerare il tuo montepremi.</div>
+            <a href="ghigliottina.html" class="btn-gioca">Gioca Ora</a>
+        </div>
+
+        <div class="card-gioco">
+            <div class="card-titolo">FightList</div>
+            <div class="card-descrizione">Dimostra la tua prontezza trovando il maggior numero di risposte corrette per una data categoria prima che scada il tempo.</div>
+            <a href="FightList.html" class="btn-gioca">Gioca Ora</a>
+        </div>
+
+        <div class="card-gioco">
+            <div class="card-titolo">Cruciverba</div>
+            <div class="card-descrizione">Metti alla prova il tuo vocabolario e la tua cultura generale risolvendo il classico schema di parole crociate.</div>
+            <a href="Cruciverba.html" class="btn-gioca">Gioca Ora</a>
+        </div>
+
+        <div class="card-gioco card-disabilitata">
+            <div class="card-titolo">L'Intesa Vincente</div>
+            <div class="card-descrizione">Fai indovinare la parola nascosta ai tuoi compagni di squadra formulando la domanda una parola alla volta.</div>
+            <a href="#" class="btn-gioca btn-disabilitato">In Arrivo</a>
+        </div>
+		
+        <div class="card-gioco card-disabilitata">
+            <div class="card-titolo">Risposta Sbagliata</div>
+            <div class="card-descrizione">Scegli l'opzione sbagliata.</div>
+            <a href="#" class="btn-gioca btn-disabilitato">In Arrivo</a>
+        </div>
+
+
+    </div>
+
+</body>
+</html>

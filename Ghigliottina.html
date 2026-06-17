@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>La Ghigliottina</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #172445;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 2px, transparent 2px);
+            background-size: 30px 30px;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        header {
+            background: linear-gradient(to bottom, #8b0000, #4a0000);
+            border-bottom: 3px solid #000;
+            width: 100%;
+            padding: 15px 0;
+            text-align: center;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.5);
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        header h1 {
+            margin: 0;
+            font-size: 2.2em;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        .btn-indietro {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            text-decoration: none;
+            background: rgba(0,0,0,0.3);
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: 1px solid white;
+            font-weight: bold;
+        }
+
+        .layout-gioco {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            width: 90%;
+            max-width: 1200px;
+            justify-content: center;
+        }
+
+        .colonna-sinistra {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .colonna-destra {
+            flex: 1.5;
+            min-width: 350px;
+            background: linear-gradient(to bottom, #8b0000, #4a0000);
+            border: 3px solid #000;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+
+        .btn-blu, .indizio-svelato {
+            background: linear-gradient(to bottom, #004b8d, #001a3b);
+            border: 2px solid #000;
+            color: white;
+            padding: 15px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 6px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .btn-blu {
+            cursor: pointer;
+        }
+
+        .indizio-svelato {
+            border-color: #d4a017;
+            margin-bottom: 5px;
+        }
+
+        .box-scelta {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .box-scelta .btn-blu {
+            flex: 1;
+        }
+
+        .montepremi-box {
+            background: linear-gradient(to bottom, #d4a017, #8b6508);
+            border: 2px solid #000;
+            padding: 15px;
+            font-size: 2.2em;
+            font-weight: bold;
+            border-radius: 6px;
+            margin-top: 20px;
+            color: white;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .filigrana-risposta {
+            font-size: 3.5em;
+            color: rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+            font-style: italic;
+            letter-spacing: 5px;
+        }
+
+        #fase-finale {
+            display: none;
+            width: 100%;
+            text-align: center;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 15px;
+            font-size: 1.8em;
+            text-align: center;
+            text-transform: uppercase;
+            border: 2px solid #000;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .btn-conferma {
+            background: linear-gradient(to bottom, #d4a017, #8b6508);
+            border: 2px solid #000;
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.5em;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .messaggio-risultato {
+            font-size: 2em;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="btn-indietro">&larr; Torna ai Giochi</a>
+        <h1>La Ghigliottina</h1>
+    </header>
+
+    <div class="layout-gioco">
+        
+        <div class="colonna-sinistra">
+            <div id="lista-indizi"></div>
+            <div id="fase-scelta" class="box-scelta">
+                <button class="btn-blu" id="btn-opzione1" onclick="seleziona(0)">OPZIONE 1</button>
+                <button class="btn-blu" id="btn-opzione2" onclick="seleziona(1)">OPZIONE 2</button>
+            </div>
+            <div class="montepremi-box" id="valore">100000</div>
+        </div>
+
+        <div class="colonna-destra">
+            <div id="fase-attesa">
+                <div class="filigrana-risposta">RISPOSTA</div>
+            </div>
+            <div id="fase-finale">
+                <input type="text" id="risposta" placeholder="Scrivi la parola misteriosa...">
+                <br>
+                <button class="btn-conferma" onclick="verifica()">CONFERMA</button>
+            </div>
+            <div id="messaggio" class="messaggio-risultato"></div>
+            <button id="btn-gioca-ancora" class="btn-conferma" style="display: none; margin-top: 20px; background: linear-gradient(to bottom, #004b8d, #001a3b);" onclick="giocaAncora()">GIOCA ANCORA</button>
+        </div>
+
+    </div>
+
+    <script>
+        var montepremi = 100000;
+        var parolaFinale = "";
+        var passaggi = [];
+        var stepCorrente = 0;
+
+        var database = [
+  {
+    "passaggi": [
+      { "opzioni": ["STAMPO", "FIRMA"], "corretta": "STAMPO" },
+      { "opzioni": ["SPAGNOLO", "FRANCESE"], "corretta": "FRANCESE" },
+      { "opzioni": ["GIUDA", "PIETRO"], "corretta": "GIUDA" },
+      { "opzioni": ["CARAMELLA", "CIOCCOLATINO"], "corretta": "CIOCCOLATINO" },
+      { "opzioni": ["ADDIO", "ARRIVEDERCI"], "corretta": "ADDIO" }
+    ],
+    "parolaFinale": "BACIO"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["SEDIA", "TAVOLA"], "corretta": "TAVOLA" },
+      { "opzioni": ["STAZIONE", "PALO"], "corretta": "STAZIONE" },
+      { "opzioni": ["CURVA", "LINEA"], "corretta": "LINEA" },
+      { "opzioni": ["FAMIGLIA", "PARENTE"], "corretta": "FAMIGLIA" },
+      { "opzioni": ["LAVORO", "RIPOSO"], "corretta": "LAVORO" }
+    ],
+    "parolaFinale": "CAPO"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["DIRITTI", "STORTI"], "corretta": "DIRITTI" },
+      { "opzioni": ["GHIACCI", "NEVI"], "corretta": "NEVI" },
+      { "opzioni": ["RAGNO", "INSETTO"], "corretta": "RAGNO" },
+      { "opzioni": ["PRIMITIVO", "ANTICO"], "corretta": "PRIMITIVO" },
+      { "opzioni": ["BIANCO", "NERO"], "corretta": "NERO" }
+    ],
+    "parolaFinale": "UOMO"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["NERO", "BIANCO"], "corretta": "NERO" },
+      { "opzioni": ["CORRETTO", "SBAGLIATO"], "corretta": "CORRETTO" },
+      { "opzioni": ["PULITO", "MACCHIATO"], "corretta": "MACCHIATO" },
+      { "opzioni": ["MAROCCHINO", "TEDESCO"], "corretta": "MAROCCHINO" },
+      { "opzioni": ["CHICCO", "SEME"], "corretta": "CHICCO" }
+    ],
+    "parolaFinale": "CAFFÈ"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["GIOCO", "STUDIO"], "corretta": "STUDIO" },
+      { "opzioni": ["LIBRO", "QUADERNO"], "corretta": "LIBRO" },
+      { "opzioni": ["PIENO", "VUOTO"], "corretta": "PIENO" },
+      { "opzioni": ["UNGHIA", "CODA"], "corretta": "CODA" },
+      { "opzioni": ["ACCADEMICO", "IMPIEGATO"], "corretta": "ACCADEMICO" }
+    ],
+    "parolaFinale": "TITOLO"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["GINNASTICA", "SPORT"], "corretta": "GINNASTICA" },
+      { "opzioni": ["PUNTA", "TACCO"], "corretta": "TACCO" },
+      { "opzioni": ["LACCIO", "NODO"], "corretta": "LACCIO" },
+      { "opzioni": ["GOMMA", "SUOLA"], "corretta": "SUOLA" },
+      { "opzioni": ["SCATOLA", "CESTO"], "corretta": "SCATOLA" }
+    ],
+    "parolaFinale": "SCARPA"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["PUBBLICA", "ANONIMA"], "corretta": "ANONIMA" },
+      { "opzioni": ["MAIUSCOLA", "GRANDE"], "corretta": "MAIUSCOLA" },
+      { "opzioni": ["SCRIVERE", "TRADURRE"], "corretta": "TRADURRE" },
+      { "opzioni": ["MUTA", "SORDA"], "corretta": "MUTA" },
+      { "opzioni": ["APERTA", "CHIUSA"], "corretta": "APERTA" }
+    ],
+    "parolaFinale": "LETTERA"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["LEGNO", "FERRO"], "corretta": "FERRO" },
+      { "opzioni": ["CARNEVALE", "NATALE"], "corretta": "CARNEVALE" },
+      { "opzioni": ["SUB", "NUOTO"], "corretta": "SUB" },
+      { "opzioni": ["CANTO", "BALLO"], "corretta": "BALLO" },
+      { "opzioni": ["GETTARE", "PRENDERE"], "corretta": "GETTARE" }
+    ],
+    "parolaFinale": "MASCHERA"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["FULMINE", "TUONO"], "corretta": "FULMINE" },
+      { "opzioni": ["REGIONE", "STATO"], "corretta": "STATO" },
+      { "opzioni": ["SONNO", "VEGLIA"], "corretta": "SONNO" },
+      { "opzioni": ["PIEDE", "TESTA"], "corretta": "TESTA" },
+      { "opzioni": ["STREGA", "FATA"], "corretta": "STREGA" }
+    ],
+    "parolaFinale": "COLPO"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["MEDAGLIA", "COPPA"], "corretta": "MEDAGLIA" },
+      { "opzioni": ["BIANCO", "NERO"], "corretta": "NERO" },
+      { "opzioni": ["FEBBRE", "TOSSE"], "corretta": "FEBBRE" },
+      { "opzioni": ["SERA", "MATTINO"], "corretta": "MATTINO" },
+      { "opzioni": ["INCUBI", "SOGNI"], "corretta": "SOGNI" }
+    ],
+    "parolaFinale": "ORO"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["LOGICO", "ASSURDO"], "corretta": "LOGICO" },
+      { "opzioni": ["MANUALE", "ELETTRICO"], "corretta": "ELETTRICO" },
+      { "opzioni": ["TROVARE", "PERDERE"], "corretta": "PERDERE" },
+      { "opzioni": ["DISCORSO", "SILENZIO"], "corretta": "DISCORSO" },
+      { "opzioni": ["SETA", "COTONE"], "corretta": "SETA" }
+    ],
+    "parolaFinale": "FILO"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["SCRIVERE", "LEGGERE"], "corretta": "SCRIVERE" },
+      { "opzioni": ["PESCE", "UCCELLO"], "corretta": "UCCELLO" },
+      { "opzioni": ["SFERA", "CUBO"], "corretta": "SFERA" },
+      { "opzioni": ["CARNE", "PASTA"], "corretta": "PASTA" },
+      { "opzioni": ["CAPPELLO", "SCARPA"], "corretta": "CAPPELLO" }
+    ],
+    "parolaFinale": "PENNA"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["CAFFÈ", "LATTE"], "corretta": "LATTE" },
+      { "opzioni": ["GIUDIZIO", "OPINIONE"], "corretta": "GIUDIZIO" },
+      { "opzioni": ["CORONA", "SCETTRO"], "corretta": "CORONA" },
+      { "opzioni": ["AVVELENATO", "CURATO"], "corretta": "AVVELENATO" },
+      { "opzioni": ["SPAZZOLINO", "PETTINE"], "corretta": "SPAZZOLINO" }
+    ],
+    "parolaFinale": "DENTE"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["SECONDA", "PRIMA"], "corretta": "SECONDA" },
+      { "opzioni": ["STRETTA", "LARGA"], "corretta": "STRETTA" },
+      { "opzioni": ["SINISTRA", "DESTRA"], "corretta": "DESTRA" },
+      { "opzioni": ["RITIRATA", "PORTATA"], "corretta": "PORTATA" },
+      { "opzioni": ["ASCIUGATURA", "LAVAGGIO"], "corretta": "LAVAGGIO" }
+    ],
+    "parolaFinale": "MANO"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["SOTTO", "SOPRA"], "corretta": "SOTTO" },
+      { "opzioni": ["FERMARE", "GIRARE"], "corretta": "GIRARE" },
+      { "opzioni": ["DISCORSO", "PENSIERO"], "corretta": "DISCORSO" },
+      { "opzioni": ["CORSA", "SALTO"], "corretta": "SALTO" },
+      { "opzioni": ["BICCHIERE", "PIATTO"], "corretta": "BICCHIERE" }
+    ],
+    "parolaFinale": "VUOTO"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["LUCE", "OMBRA"], "corretta": "LUCE" },
+      { "opzioni": ["ACQUA", "GAS"], "corretta": "GAS" },
+      { "opzioni": ["TELEFONO", "LETTERA"], "corretta": "TELEFONO" },
+      { "opzioni": ["DOLCE", "SALATA"], "corretta": "SALATA" },
+      { "opzioni": ["PAGARE", "INCASSARE"], "corretta": "PAGARE" }
+    ],
+    "parolaFinale": "BOLLETTA"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["TERMALE", "CLINICA"], "corretta": "TERMALE" },
+      { "opzioni": ["PERIFERICA", "CENTRALE"], "corretta": "CENTRALE" },
+      { "opzioni": ["AEREO", "TRENO"], "corretta": "TRENO" },
+      { "opzioni": ["CAPOLINEA", "PARTENZA"], "corretta": "CAPOLINEA" },
+      { "opzioni": ["POLIZIA", "CARABINIERI"], "corretta": "POLIZIA" }
+    ],
+    "parolaFinale": "STAZIONE"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["GIALLO", "ROSSO"], "corretta": "ROSSO" },
+      { "opzioni": ["FREDDO", "CALDO"], "corretta": "FREDDO" },
+      { "opzioni": ["DONATORE", "RICEVENTE"], "corretta": "DONATORE" },
+      { "opzioni": ["SINGOLO", "GRUPPO"], "corretta": "GRUPPO" },
+      { "opzioni": ["CIRCOLAZIONE", "TRAFFICO"], "corretta": "CIRCOLAZIONE" }
+    ],
+    "parolaFinale": "SANGUE"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["ALTA", "LUNGA"], "corretta": "ALTA" },
+      { "opzioni": ["CORTA", "BASSA"], "corretta": "BASSA" },
+      { "opzioni": ["LUNA", "SOLE"], "corretta": "LUNA" },
+      { "opzioni": ["GENTE", "COSE"], "corretta": "GENTE" },
+      { "opzioni": ["VENEZIA", "ROMA"], "corretta": "VENEZIA" }
+    ],
+    "parolaFinale": "MAREA"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["PIUMA", "PIETRA"], "corretta": "PIUMA" },
+      { "opzioni": ["CANCELLARE", "SCRIVERE"], "corretta": "CANCELLARE" },
+      { "opzioni": ["MASTICARE", "BERE"], "corretta": "MASTICARE" },
+      { "opzioni": ["SCORTA", "VIAGGIO"], "corretta": "SCORTA" },
+      { "opzioni": ["AMERICANA", "FRANCESE"], "corretta": "AMERICANA" }
+    ],
+    "parolaFinale": "GOMMA"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["NOVELLO", "VECCHIO"], "corretta": "NOVELLO" },
+      { "opzioni": ["SFUSO", "ROSSO"], "corretta": "ROSSO" },
+      { "opzioni": ["TAVOLA", "SEDIA"], "corretta": "TAVOLA" },
+      { "opzioni": ["CANTINA", "SOFFITTA"], "corretta": "CANTINA" },
+      { "opzioni": ["BICCHIERE", "PIATTO"], "corretta": "BICCHIERE" }
+    ],
+    "parolaFinale": "VINO"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["MAESTRO", "PROFESSORE"], "corretta": "MAESTRO" },
+      { "opzioni": ["PASQUA", "NATALE"], "corretta": "NATALE" },
+      { "opzioni": ["FIORE", "FRUTTO"], "corretta": "FRUTTO" },
+      { "opzioni": ["FOGLIE", "RADICI"], "corretta": "FOGLIE" },
+      { "opzioni": ["GENEALOGICO", "STORICO"], "corretta": "GENEALOGICO" }
+    ],
+    "parolaFinale": "ALBERO"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["CUCINA", "BAGNO"], "corretta": "CUCINA" },
+      { "opzioni": ["MOSCHE", "ZANZARE"], "corretta": "MOSCHE" },
+      { "opzioni": ["SANITARIA", "IGIENICA"], "corretta": "IGIENICA" },
+      { "opzioni": ["FRIGORIFERO", "FORNO"], "corretta": "FORNO" },
+      { "opzioni": ["IDENTITÀ", "PASSAPORTO"], "corretta": "IDENTITÀ" }
+    ],
+    "parolaFinale": "CARTA"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["PANNELLO", "MURO"], "corretta": "PANNELLO" },
+      { "opzioni": ["SISTEMA", "APPARATO"], "corretta": "SISTEMA" },
+      { "opzioni": ["FORZA", "ENERGIA"], "corretta": "ENERGIA" },
+      { "opzioni": ["LUCE", "OMBRA"], "corretta": "LUCE" },
+      { "opzioni": ["ALLINEAMENTO", "ECLISSI"], "corretta": "ECLISSI" }
+    ],
+    "parolaFinale": "SOLARE"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["NASCOSTO", "SCOPERTO"], "corretta": "SCOPERTO" },
+      { "opzioni": ["PALLIDO", "SCURO"], "corretta": "PALLIDO" },
+      { "opzioni": ["SORRISO", "PIANTO"], "corretta": "SORRISO" },
+      { "opzioni": ["PUGNO", "SCHIAFFO"], "corretta": "SCHIAFFO" },
+      { "opzioni": ["LAVARE", "ASCIUGARE"], "corretta": "LAVARE" }
+    ],
+    "parolaFinale": "VISO"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["DOLCE", "SALATO"], "corretta": "DOLCE" },
+      { "opzioni": ["VECCHIA", "NUOVA"], "corretta": "NUOVA" },
+      { "opzioni": ["TRACCIA", "SEGNO"], "corretta": "SEGNO" },
+      { "opzioni": ["ASSICURAZIONE", "POLIZZA"], "corretta": "ASSICURAZIONE" },
+      { "opzioni": ["CERTEZZA", "SPERANZA"], "corretta": "SPERANZA" }
+    ],
+    "parolaFinale": "VITA"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["CAMERA", "SALOTTO"], "corretta": "CAMERA" },
+      { "opzioni": ["FIUME", "MARE"], "corretta": "FIUME" },
+      { "opzioni": ["AMICO", "COMPAGNO"], "corretta": "COMPAGNO" },
+      { "opzioni": ["MATRIMONIALE", "SINGOLA"], "corretta": "MATRIMONIALE" },
+      { "opzioni": ["STRADA", "PIAZZA"], "corretta": "PIAZZA" }
+    ],
+    "parolaFinale": "LETTO"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["ZONA", "QUARTIERE"], "corretta": "ZONA" },
+      { "opzioni": ["OBBLIGO", "SCELTA"], "corretta": "SCELTA" },
+      { "opzioni": ["PROFESSIONE", "HOBBY"], "corretta": "PROFESSIONE" },
+      { "opzioni": ["CADUTA", "SALITA"], "corretta": "CADUTA" },
+      { "opzioni": ["USCITA", "ENTRATA"], "corretta": "USCITA" }
+    ],
+    "parolaFinale": "LIBERA"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["ACQUA", "VINO"], "corretta": "ACQUA" },
+      { "opzioni": ["FISICO", "CHIMICO"], "corretta": "CHIMICO" },
+      { "opzioni": ["NATURALE", "ARTIFICIALE"], "corretta": "NATURALE" },
+      { "opzioni": ["CHIAVE", "SERRATURA"], "corretta": "CHIAVE" },
+      { "opzioni": ["SPICCO", "OMBRA"], "corretta": "SPICCO" }
+    ],
+    "parolaFinale": "ELEMENTO"
+  },
+  {
+    "passaggi": [
+      { "opzioni": ["SFERA", "CUBO"], "corretta": "CUBO" },
+      { "opzioni": ["SCIOGLIERE", "LEGARE"], "corretta": "SCIOGLIERE" },
+      { "opzioni": ["SECCO", "UMIDO"], "corretta": "SECCO" },
+      { "opzioni": ["SCIARE", "PATTINARE"], "corretta": "PATTINARE" },
+      { "opzioni": ["SCIVOLARE", "CAMMINARE"], "corretta": "SCIVOLARE" }
+    ],
+    "parolaFinale": "GHIACCIO"
+  }
+];
+
+        function inizializzaGioco() {
+            var indiceCasuale = Math.floor(Math.random() * database.length);
+            var partitaScelta = database[indiceCasuale];
+            parolaFinale = partitaScelta.parolaFinale;
+            passaggi = partitaScelta.passaggi;
+            aggiornaInterfaccia();
+        }
+
+        function aggiornaInterfaccia() {
+            // Utilizzo del codice \u20AC per generare il simbolo Euro in sicurezza
+            document.getElementById('valore').innerText = montepremi + " \u20AC";
+            
+            if (stepCorrente < passaggi.length) {
+                document.getElementById('btn-opzione1').innerText = passaggi[stepCorrente].opzioni[0];
+                document.getElementById('btn-opzione2').innerText = passaggi[stepCorrente].opzioni[1];
+            } else {
+                document.getElementById('fase-scelta').style.display = 'none';
+                document.getElementById('fase-attesa').style.display = 'none';
+                document.getElementById('fase-finale').style.display = 'block';
+            }
+        }
+
+        function seleziona(indiceScelta) {
+            var parolaScelta = passaggi[stepCorrente].opzioni[indiceScelta];
+            var parolaCorretta = passaggi[stepCorrente].corretta;
+
+            if (parolaScelta !== parolaCorretta) {
+                montepremi = Math.floor(montepremi / 2);
+            }
+
+            var divIndizio = document.createElement("div");
+            divIndizio.className = "indizio-svelato";
+            divIndizio.innerText = parolaCorretta;
+            document.getElementById('lista-indizi').appendChild(divIndizio);
+
+            stepCorrente++;
+            aggiornaInterfaccia();
+        }
+
+        function verifica() {
+            var risposta = document.getElementById('risposta').value.toLowerCase().trim();
+            var messaggio = document.getElementById('messaggio');
+            
+            document.querySelector('.btn-conferma').disabled = true;
+
+            if (risposta === parolaFinale.toLowerCase()) {
+                messaggio.style.color = "#4CAF50"; 
+                messaggio.innerText = "ESATTO! Hai Vinto " + montepremi + " \u20AC!";
+            } else {
+                messaggio.style.color = "#ffb3b3"; 
+                messaggio.innerText = "SBAGLIATO! La parola era: " + parolaFinale.toUpperCase();
+                document.getElementById('valore').innerText = "0 \u20AC";
+            }
+            
+            // NUOVA RIGA INSERITA PER MOSTRARE IL PULSANTE
+            document.getElementById('btn-gioca-ancora').style.display = 'block';
+        }
+
+        // NUOVA FUNZIONE INSERITA PER RESETTARE IL GIOCO
+        function giocaAncora() {
+            montepremi = 100000;
+            stepCorrente = 0;
+            
+            // Svuota i box
+            document.getElementById('lista-indizi').innerHTML = '';
+            document.getElementById('risposta').value = '';
+            document.getElementById('messaggio').innerText = '';
+            
+            // Nascondi fine gioco e ripristina la schermata iniziale
+            document.getElementById('fase-finale').style.display = 'none';
+            document.getElementById('fase-scelta').style.display = 'flex';
+            document.getElementById('fase-attesa').style.display = 'block';
+            
+            // Ripristina i pulsanti
+            document.querySelector('.btn-conferma').disabled = false;
+            document.getElementById('btn-gioca-ancora').style.display = 'none';
+            
+            inizializzaGioco();
+        }
+
+        // Avvia il caricamento dei dati direttamente dal browser
+        window.onload = inizializzaGioco;
+    </script>
+</body>
+</html>
